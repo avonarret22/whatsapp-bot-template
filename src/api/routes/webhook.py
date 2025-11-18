@@ -9,6 +9,7 @@ from src.core.config import get_config_manager, get_settings
 from src.core.client_context import ClientContext
 from src.core.feature_manager import FeatureManager
 from src.core.exceptions import ClientNotFoundError, AIServiceError
+from src.integrations.twilio_client import TwilioClient
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/webhook", tags=["webhook"])
@@ -108,11 +109,15 @@ async def whatsapp_webhook(
             response_text = fallback_messages[0] if fallback_messages else "Lo siento, no pude procesar tu mensaje."
 
         # PASO 5: Enviar respuesta (en background)
-        # Por ahora solo logeamos, en producción se enviaría vía Twilio
         logger.info(f"📤 Response to {From}: {response_text}")
 
-        # TODO: Implementar envío real vía Twilio
-        # background_tasks.add_task(send_whatsapp_message, From, response_text)
+        # Enviar mensaje vía Twilio en background
+        background_tasks.add_task(
+            send_whatsapp_message,
+            client_id=client_id,
+            to=From,
+            message=response_text
+        )
 
         # TODO: Guardar conversación en base de datos
         # background_tasks.add_task(save_conversation, ...)
@@ -145,3 +150,33 @@ async def whatsapp_webhook_verify():
     Twilio hace un GET para verificar que el webhook existe.
     """
     return {"status": "webhook_ready"}
+
+
+async def send_whatsapp_message(client_id: str, to: str, message: str):
+    """
+    Envía un mensaje de WhatsApp vía Twilio (ejecutado en background).
+
+    Args:
+        client_id: ID del cliente
+        to: Número de destino (ej: +5491123456789)
+        message: Texto del mensaje
+    """
+    try:
+        twilio_client = TwilioClient(client_id=client_id)
+
+        if not twilio_client.is_configured():
+            logger.warning(
+                f"Twilio not configured for client '{client_id}'. "
+                f"Message will not be sent: {message[:50]}..."
+            )
+            return
+
+        message_sid = await twilio_client.send_message(to=to, message=message)
+
+        if message_sid:
+            logger.info(f"✓ Message sent successfully. SID: {message_sid}")
+        else:
+            logger.error(f"Failed to send message to {to}")
+
+    except Exception as e:
+        logger.error(f"Error in background task send_whatsapp_message: {e}", exc_info=True)
