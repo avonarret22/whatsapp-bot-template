@@ -1,0 +1,65 @@
+client_id: "demo_client"
+client_name: "Demo Bot (Ejemplo)"
+plan: "basic"
+
+# Features habilitadas (Plan Basic)
+features:
+  ai_responses:
+    enabled: true
+    config:
+      provider: "gemini"
+      provider_config:
+        api_key: "${GEMINI_API_KEY_DEMO}"
+        model: "gemini-1.5-flash"
+        temperature: 0.8
+        max_tokens: 300
+
+# Personalidad del bot
+personality:
+  name: "Demo Bot"
+  tone: "friendly"
+  language: "es"
+  style: "conversational"
+
+  system_prompt: |
+    Eres un asistente virtual de demostración.
+    Tu personalidad es amigable y servicial.
+
+    RESPONSABILIDADES:
+    - Responder preguntas de forma clara
+    - Ser amable y profesional
+    - Mantener conversaciones breves (máximo 3 oraciones)
+
+    REGLAS:
+    - Saluda cordialmente
+    - Si no sabes algo, sé honesto
+    - Usa un tono casual pero respetuoso
+
+  greetings:
+    - "¡Hola! ¿En qué puedo ayudarte?"
+    - "Hola, bienvenido. ¿Cómo puedo asistirte?"
+
+  fallback_messages:
+    - "No estoy seguro de cómo ayudarte con eso"
+    - "Déjame conectarte con alguien que pueda ayudarte mejor"
+
+# Configuración de mensajería
+messaging_provider: "twilio"
+messaging_config:
+  account_sid: "${TWILIO_SID_DEMO}"
+  auth_token: "${TWILIO_TOKEN_DEMO}"
+  whatsapp_number: "${TWILIO_PHONE_DEMO}"
+
+# Configuración de AI
+ai_provider: "gemini"
+ai_config:
+  api_key: "${GEMINI_API_KEY_DEMO}"
+  model: "gemini-1.5-flash"
+
+# Base de datos
+database_url: "sqlite+aiosqlite:///./data/demo_client/bot.db"
+
+# Rate limits
+rate_limits:
+  messages_per_minute: 10
+  messages_per_hour: 100

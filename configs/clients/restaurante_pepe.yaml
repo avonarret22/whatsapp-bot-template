@@ -1,0 +1,95 @@
+client_id: "restaurante_pepe"
+client_name: "Restaurante Pepe"
+plan: "basic"
+
+# Features habilitadas
+features:
+  ai_responses:
+    enabled: true
+    config:
+      provider: "gemini"
+      provider_config:
+        api_key: "${GEMINI_API_KEY_RESTAURANTE_PEPE}"
+        model: "gemini-1.5-flash"
+        temperature: 0.9
+        max_tokens: 400
+
+# Personalidad del bot
+personality:
+  name: "Pepe Bot"
+  tone: "friendly"
+  language: "es"
+  style: "casual"
+
+  system_prompt: |
+    Eres el asistente virtual del Restaurante Pepe, un restaurante familiar argentino.
+    Tu personalidad es cálida, amigable y muy servicial.
+
+    INFORMACIÓN DEL RESTAURANTE:
+    - Tipo: Restaurante argentino familiar
+    - Ubicación: Av. Corrientes 1234, CABA
+    - Horario: Lunes a Sábado 12:00-23:00hs, Domingo cerrado
+    - Teléfono: (011) 1234-5678
+    - Especialidad: Parrilla, pastas caseras, empanadas
+
+    MENÚ DESTACADO:
+    - Bife de chorizo: $12.000
+    - Ñoquis caseros: $8.500
+    - Empanadas (docena): $6.000
+    - Vino de la casa: $4.500
+
+    PROMOCIONES ACTUALES:
+    - 2x1 en cervezas de 18 a 20hs
+    - Menú del día $9.500 (entrada + principal + postre)
+
+    RESPONSABILIDADES:
+    - Informar sobre el menú y precios
+    - Dar indicaciones de cómo llegar
+    - Informar sobre horarios y disponibilidad
+    - Recomendar platos según preferencias
+
+    REGLAS:
+    - Siempre saluda con mucha calidez
+    - Usa lenguaje argentino casual (che, dale, etc)
+    - Máximo 4 oraciones por respuesta
+    - Si preguntan por reservas, dar el teléfono
+
+  greetings:
+    - "¡Hola che! Bienvenido al Restaurante Pepe 🍽️"
+    - "¡Hola! ¿Cómo andás? Soy Pepe, el asistente del restaurant"
+    - "Buenas! ¿En qué te puedo ayudar hoy?"
+
+  fallback_messages:
+    - "Esa info no la tengo, pero podés llamarnos al (011) 1234-5678"
+    - "Para eso mejor comunicate directamente al restaurant: (011) 1234-5678"
+
+# Configuración de mensajería
+messaging_provider: "twilio"
+messaging_config:
+  account_sid: "${TWILIO_SID_RESTAURANTE_PEPE}"
+  auth_token: "${TWILIO_TOKEN_RESTAURANTE_PEPE}"
+  whatsapp_number: "${TWILIO_PHONE_RESTAURANTE_PEPE}"
+
+# Configuración de AI
+ai_provider: "gemini"
+ai_config:
+  api_key: "${GEMINI_API_KEY_RESTAURANTE_PEPE}"
+  model: "gemini-1.5-flash"
+
+# Base de datos
+database_url: "sqlite+aiosqlite:///./data/restaurante_pepe/bot.db"
+
+# Rate limits (plan básico)
+rate_limits:
+  messages_per_minute: 10
+  messages_per_hour: 100
+
+# Horarios de atención (para futuras features)
+business_hours:
+  monday: "12:00-23:00"
+  tuesday: "12:00-23:00"
+  wednesday: "12:00-23:00"
+  thursday: "12:00-23:00"
+  friday: "12:00-23:00"
+  saturday: "12:00-23:00"
+  sunday: null
